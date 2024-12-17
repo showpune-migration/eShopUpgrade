@@ -48,10 +48,7 @@ namespace eShopLegacyMVC.Controllers
         public ActionResult UploadDocument(List<IFormFile> files)
         {
             var fileService = FileService.Create();
-            foreach (var file in files)
-            {
-                fileService.UploadFile(file);
-            }
+            fileService.UploadFile(files);
             return RedirectToAction("Index");
         }
     }
