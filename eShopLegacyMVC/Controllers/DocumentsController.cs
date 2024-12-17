@@ -31,10 +31,10 @@ namespace eShopLegacyMVC.Controllers
         }
 
         [HttpPost]
-        public ActionResult UploadDocument()
+        public ActionResult UploadDocument(IFormFileCollection files)
         {
             var fileService = FileService.Create();
-            fileService.UploadFile(Request.Files);
+            fileService.UploadFile(files);
             return RedirectToAction("Index");
         }
     }
