@@ -2,12 +2,19 @@ using eShopLegacyMVC.Services;
 using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace eShopLegacyMVC.Controllers
 {
     public class DocumentsController : Controller
     {
+        private readonly FileExtensionContentTypeProvider _contentTypeProvider;
+
+        public DocumentsController()
+        {
+            _contentTypeProvider = new FileExtensionContentTypeProvider();
+        }
+
         // GET: Files
         public ActionResult Index()
         {
@@ -20,7 +27,13 @@ namespace eShopLegacyMVC.Controllers
         {
             var fileService = FileService.Create();
             var file = fileService.DownloadFile(filename);
-            FileContentResult fc = new FileContentResult(file, MimeMapping.GetMimeMapping(filename));
+
+            if (!_contentTypeProvider.TryGetContentType(filename, out string contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+
+            FileContentResult fc = new FileContentResult(file, contentType);
             fc.FileDownloadName = filename;
             return fc;
         }
