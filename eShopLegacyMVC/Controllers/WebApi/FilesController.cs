@@ -2,7 +2,8 @@ using eShopLegacy.Utilities;
 using eShopLegacyMVC.Services;
 using System;
 using System.Linq;
-using System.IO;
+using System.Net;
+using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eShopLegacyMVC.Controllers.WebApi
@@ -19,8 +20,7 @@ namespace eShopLegacyMVC.Controllers.WebApi
         }
 
         // GET api/<controller>
-        [HttpGet]
-        public IActionResult Get()
+        public HttpResponseMessage Get()
         {
             var brands = _service.GetCatalogBrands()
                 .Select(b => new BrandDTO
@@ -29,10 +29,12 @@ namespace eShopLegacyMVC.Controllers.WebApi
                     Brand = b.Brand
                 }).ToList();
             var serializer = new Serializing();
-            byte[] serializedData = serializer.SerializeBinary(brands);
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StreamContent(serializer.SerializeBinary(brands))
+            };
 
-            var stream = new MemoryStream(serializedData);
-            return File(stream, "application/octet-stream", "brands.bin");
+            return response;
         }
 
         [Serializable]
