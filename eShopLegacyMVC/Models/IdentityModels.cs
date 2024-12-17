@@ -1,10 +1,8 @@
-using Microsoft.AspNet.Identity.EntityFramework;
 using System.IO;
 using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-
 
 namespace eShopLegacyMVC.Models
 {
@@ -13,12 +11,12 @@ namespace eShopLegacyMVC.Models
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
-            var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
+            var userIdentity = await manager.CreateIdentityAsync(this, IdentityConstants.ApplicationScheme);
             // Add custom user claims here
             return userIdentity;
         }
 
-        private int? _zipCode = null; 
+        private int? _zipCode = null;
 
         public int? ZipCode
         {
@@ -33,7 +31,7 @@ namespace eShopLegacyMVC.Models
 
                     var response = req.GetResponse();
                     var responseStream = response.GetResponseStream();
-                    using (var reader = new StreamReader(responseStream))
+using (var reader = new StreamReader(responseStream))
                     {
                         var zipCode = reader.ReadToEnd();
                         _zipCode = int.Parse(zipCode);
@@ -46,14 +44,14 @@ namespace eShopLegacyMVC.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext()
-            : base("IdentityDBContext", throwIfV1Schema: false)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
         {
         }
 
         public static ApplicationDbContext Create()
         {
-            return new ApplicationDbContext();
+            throw new NotImplementedException("This method needs to be updated to use the new DbContextOptions pattern.");
         }
     }
 }
