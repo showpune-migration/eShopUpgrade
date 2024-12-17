@@ -1,8 +1,8 @@
 using eShopLegacyMVC.Services;
+using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.FileProviders;
-using System.IO;
+
 
 namespace eShopLegacyMVC.Controllers
 {
@@ -20,7 +20,9 @@ namespace eShopLegacyMVC.Controllers
         {
             var fileService = FileService.Create();
             var file = fileService.DownloadFile(filename);
-            return File(file, "application/octet-stream", filename);
+            FileContentResult fc = new FileContentResult(file, MimeMapping.GetMimeMapping(filename));
+            fc.FileDownloadName = filename;
+            return fc;
         }
 
         public ActionResult Upload()
@@ -29,10 +31,10 @@ namespace eShopLegacyMVC.Controllers
         }
 
         [HttpPost]
-        public ActionResult UploadDocument(IFormFileCollection files)
+        public ActionResult UploadDocument()
         {
             var fileService = FileService.Create();
-            fileService.UploadFile(files);
+            fileService.UploadFile(Request.Files);
             return RedirectToAction("Index");
         }
     }
