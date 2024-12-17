@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace eShopLegacyMVC.Controllers
 {
@@ -45,10 +47,20 @@ namespace eShopLegacyMVC.Controllers
         }
 
         [HttpPost]
-        public ActionResult UploadDocument(List<IFormFile> files)
+        public async Task<ActionResult> UploadDocument(List<IFormFile> files)
         {
             var fileService = FileService.Create();
-            fileService.UploadFile(files);
+            foreach (var file in files)
+            {
+                if (file.Length > 0)
+                {
+using (var ms = new MemoryStream())
+                    {
+                        await file.CopyToAsync(ms);
+                        fileService.UploadFile(file.FileName, ms.ToArray());
+                    }
+                }
+            }
             return RedirectToAction("Index");
         }
     }
