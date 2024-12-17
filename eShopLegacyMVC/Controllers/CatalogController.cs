@@ -61,7 +61,7 @@ namespace eShopLegacyMVC.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Description,Price,PictureFileName,CatalogTypeId,CatalogBrandId,AvailableStock,RestockThreshold,MaxStockThreshold,OnReorder")] CatalogItem catalogItem)
+        public ActionResult Create([FromForm] CatalogItem catalogItem)
         {
             _log.Info($"Now processing... /Catalog/Create?catalogItemName={catalogItem.Name}");
             if (ModelState.IsValid)
