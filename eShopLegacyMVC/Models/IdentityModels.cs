@@ -4,17 +4,16 @@ using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace eShopLegacyMVC.Models
 {
-    public class ApplicationUser : IdentityUser
+    public class ApplicationUser : Microsoft.AspNetCore.Identity.IdentityUser
     {
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
-            var userIdentity = await manager.CreateAsync(this);
+            var userIdentity = await manager.CreateIdentityAsync(this, IdentityConstants.ApplicationScheme);
             // Add custom user claims here
             return userIdentity;
         }
@@ -47,17 +46,14 @@ using (var reader = new StreamReader(responseStream))
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
+        public ApplicationDbContext()
+            : base("IdentityDBContext", throwIfV1Schema: false)
         {
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public static ApplicationDbContext Create()
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer("name=IdentityDBContext");
-            }
+            return new ApplicationDbContext();
         }
     }
 }
