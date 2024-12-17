@@ -2,8 +2,8 @@ using eShopLegacyMVC.Models;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Identity;
-
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace eShopLegacyMVC.Controllers
