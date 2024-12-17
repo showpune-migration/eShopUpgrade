@@ -5,7 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
-using System.Web;
+using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 using Microsoft.Win32.SafeHandles;
 
 namespace eShopLegacyMVC.Services
@@ -59,7 +60,7 @@ namespace eShopLegacyMVC.Services
             });
         }
 
-        public void UploadFile(HttpFileCollectionBase files)
+public void UploadFile(List<IFormFile> files)
         {
             var authToken = string.IsNullOrEmpty(configuration.ServiceAccountUsername)
                 ? WindowsIdentity.GetCurrent().AccessToken
