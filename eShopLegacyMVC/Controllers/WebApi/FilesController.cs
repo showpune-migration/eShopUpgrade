@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eShopLegacyMVC.Controllers.WebApi
@@ -20,6 +21,7 @@ namespace eShopLegacyMVC.Controllers.WebApi
         }
 
         // GET api/<controller>
+        [HttpGet]
         public HttpResponseMessage Get()
         {
             var brands = _service.GetCatalogBrands()
@@ -29,9 +31,17 @@ namespace eShopLegacyMVC.Controllers.WebApi
                     Brand = b.Brand
                 }).ToList();
             var serializer = new Serializing();
+            string serializedString = serializer.SerializeBinary(brands);
+            byte[] serializedData = Encoding.UTF8.GetBytes(serializedString);
+
             var response = new HttpResponseMessage(HttpStatusCode.OK)
             {
-                Content = new StreamContent(serializer.SerializeBinary(brands))
+                Content = new ByteArrayContent(serializedData)
+            };
+            response.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            response.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment")
+            {
+                FileName = "brands.bin"
             };
 
             return response;
