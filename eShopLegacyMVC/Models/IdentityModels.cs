@@ -6,19 +6,18 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNet.Identity;
 
 namespace eShopLegacyMVC.Models
 {
     public class ApplicationUser : IdentityUser
     {
-    public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
-    {
-        // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
-        var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
-        // Add custom user claims here
-        return userIdentity;
-    }
+        public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
+        {
+            // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
+            var userIdentity = await manager.CreateAsync(this);
+            // Add custom user claims here
+            return userIdentity;
+        }
 
         private int? _zipCode = null;
 
