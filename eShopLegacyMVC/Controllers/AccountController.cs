@@ -105,9 +105,9 @@ namespace eShopLegacyMVC.Controllers
         // POST: /Account/LogOff
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult LogOff()
+        public async Task<IActionResult> LogOff()
         {
-            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Catalog");
         }
 
