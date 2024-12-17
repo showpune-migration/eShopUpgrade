@@ -4,11 +4,11 @@ using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace eShopLegacyMVC.Models
 {
-    public class ApplicationUser : Microsoft.AspNetCore.Identity.IdentityUser
+    public class ApplicationUser : IdentityUser
     {
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
@@ -46,14 +46,14 @@ using (var reader = new StreamReader(responseStream))
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext()
-            : base("IdentityDBContext", throwIfV1Schema: false)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
         {
         }
 
-        public static ApplicationDbContext Create()
+        public static ApplicationDbContext Create(DbContextOptions<ApplicationDbContext> options)
         {
-            return new ApplicationDbContext();
+            return new ApplicationDbContext(options);
         }
     }
 }
