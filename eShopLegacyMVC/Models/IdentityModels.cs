@@ -8,7 +8,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace eShopLegacyMVC.Models
 {
-    public class ApplicationUser : IdentityUser
+    public class ApplicationUser : Microsoft.AspNetCore.Identity.IdentityUser
     {
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
