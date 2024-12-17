@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
@@ -39,10 +39,10 @@ namespace eShopLegacyMVC.Services
                 ? WindowsIdentity.GetCurrent().Token
                 : GetAuthToken(configuration.ServiceAccountUsername, configuration.ServiceAccountDomain, configuration.ServiceAccountPassword);
 
-            using (var impersonationContext = WindowsIdentity.Impersonate(authToken))
+            return WindowsIdentity.RunImpersonated(authToken, () =>
             {
                 return Directory.GetFiles(configuration.BasePath).Select(Path.GetFileName);
-            }
+            });
         }
 
         public byte[] DownloadFile(string filename)
@@ -51,11 +51,11 @@ namespace eShopLegacyMVC.Services
                 ? WindowsIdentity.GetCurrent().Token
                 : GetAuthToken(configuration.ServiceAccountUsername, configuration.ServiceAccountDomain, configuration.ServiceAccountPassword);
 
-            using (var impersonationContext = WindowsIdentity.Impersonate(authToken))
+            return WindowsIdentity.RunImpersonated(authToken, () =>
             {
                 var path = Path.Combine(configuration.BasePath, filename);
                 return File.ReadAllBytes(path);
-            }
+            });
         }
 
         public void UploadFile(HttpFileCollectionBase files)
@@ -64,22 +64,21 @@ namespace eShopLegacyMVC.Services
                 ? WindowsIdentity.GetCurrent().Token
                 : GetAuthToken(configuration.ServiceAccountUsername, configuration.ServiceAccountDomain, configuration.ServiceAccountPassword);
 
-            using (var impersonationContext = WindowsIdentity.Impersonate(authToken))
+            WindowsIdentity.RunImpersonated(authToken, () =>
             {
-
                 for (var i = 0; i < files.Count; i++)
                 {
                     var file = files[i];
                     var filename = Path.GetFileName(file.FileName);
                     var path = Path.Combine(configuration.BasePath, filename);
 
-                    using (var fs = File.Create(path))
+using (var fs = File.Create(path))
                     {
                         // TODO - Switch to CopyToAsync when upgrading to .NET 8
                         file.InputStream.CopyTo(fs);
                     }
                 }
-            }
+            });
         }
 
         private IntPtr GetAuthToken(string username, string domain, string password)
