@@ -1,10 +1,10 @@
-﻿using eShopLegacyMVC.Models;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.AspNet.Identity;
-using Microsoft.Owin.Security;
+using eShopLegacyMVC.Models;
 using System.Threading.Tasks;
 using System.Web;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Identity;
+
+using Microsoft.AspNetCore.Mvc;
+
 
 namespace eShopLegacyMVC.Controllers
 {

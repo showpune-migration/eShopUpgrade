@@ -1,6 +1,7 @@
-﻿using eShopLegacyMVC.Services;
+using eShopLegacyMVC.Services;
 using System.Web;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+
 
 namespace eShopLegacyMVC.Controllers
 {

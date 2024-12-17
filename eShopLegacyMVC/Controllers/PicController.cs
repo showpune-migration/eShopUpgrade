@@ -1,8 +1,9 @@
-﻿using eShopLegacyMVC.Services;
+using eShopLegacyMVC.Services;
 using log4net;
 using System.IO;
 using System.Net;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+
 
 namespace eShopLegacyMVC.Controllers
 {

@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Messaging;
 using System.Net;
-using System.Web.Mvc;
 using eShopLegacyMVC.Models;
 using eShopLegacyMVC.Services;
 using log4net;
+using Microsoft.AspNetCore.Mvc;
+
 
 namespace eShopLegacyMVC.Controllers
 {
