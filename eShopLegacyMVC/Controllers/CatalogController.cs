@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Configuration;
-using System.Messaging;
 using System.Net;
 using eShopLegacyMVC.Models;
 using eShopLegacyMVC.Services;
@@ -79,17 +78,10 @@ namespace eShopLegacyMVC.Controllers
 
         private void QueueItemCreatedMessage(CatalogItem catalogItem)
         {
-            using (var queue = new MessageQueue(ConfigurationManager.AppSettings["NewItemQueuePath"]))
-            {
-                var message = new Message
-                {
-                    Formatter = new XmlMessageFormatter(new[] { typeof(CatalogItem) }),
-                    Body = catalogItem,
-                    Label = "New catalog item"
-                };
-
-                queue.Send(message);
-            }
+// TODO: Implement message queuing using a different technology
+            // For example, you might use Azure Service Bus, RabbitMQ, or another messaging solution
+            // For now, we'll just log that this method needs to be implemented
+            _log.Warn("QueueItemCreatedMessage method needs to be implemented with a new messaging solution.");
         }
 
         // GET: Catalog/Edit/5
