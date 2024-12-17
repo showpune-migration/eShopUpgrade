@@ -5,6 +5,7 @@ using eShopLegacyMVC.Models;
 using eShopLegacyMVC.Services;
 using log4net;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 
 namespace eShopLegacyMVC.Controllers
