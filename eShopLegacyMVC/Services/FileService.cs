@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Web;
+using Microsoft.Win32.SafeHandles;
 
 namespace eShopLegacyMVC.Services
 {
@@ -16,8 +17,8 @@ namespace eShopLegacyMVC.Services
 
         private readonly FileServiceConfiguration configuration;
 
-        [DllImport("advapi32.dll", SetLastError = true)]
-        public static extern bool LogonUser(string lpszUsername, string lpszDomain, string lpszPassword, int dwLogonType, int dwLogonProvider, out IntPtr phToken);
+        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        public static extern bool LogonUser(string lpszUsername, string lpszDomain, string lpszPassword, int dwLogonType, int dwLogonProvider, out SafeAccessTokenHandle phToken);
 
         public FileService(FileServiceConfiguration configuration)
         {
@@ -36,55 +37,54 @@ namespace eShopLegacyMVC.Services
         public IEnumerable<string> ListFiles()
         {
             var authToken = string.IsNullOrEmpty(configuration.ServiceAccountUsername)
-                ? WindowsIdentity.GetCurrent().Token
+                ? WindowsIdentity.GetCurrent().AccessToken
                 : GetAuthToken(configuration.ServiceAccountUsername, configuration.ServiceAccountDomain, configuration.ServiceAccountPassword);
 
-            using (var impersonationContext = WindowsIdentity.Impersonate(authToken))
+            return WindowsIdentity.RunImpersonated(authToken, () =>
             {
                 return Directory.GetFiles(configuration.BasePath).Select(Path.GetFileName);
-            }
+            });
         }
 
         public byte[] DownloadFile(string filename)
         {
             var authToken = string.IsNullOrEmpty(configuration.ServiceAccountUsername)
-                ? WindowsIdentity.GetCurrent().Token
+                ? WindowsIdentity.GetCurrent().AccessToken
                 : GetAuthToken(configuration.ServiceAccountUsername, configuration.ServiceAccountDomain, configuration.ServiceAccountPassword);
 
-            using (var impersonationContext = WindowsIdentity.Impersonate(authToken))
+            return WindowsIdentity.RunImpersonated(authToken, () =>
             {
                 var path = Path.Combine(configuration.BasePath, filename);
                 return File.ReadAllBytes(path);
-            }
+            });
         }
 
         public void UploadFile(HttpFileCollectionBase files)
         {
             var authToken = string.IsNullOrEmpty(configuration.ServiceAccountUsername)
-                ? WindowsIdentity.GetCurrent().Token
+                ? WindowsIdentity.GetCurrent().AccessToken
                 : GetAuthToken(configuration.ServiceAccountUsername, configuration.ServiceAccountDomain, configuration.ServiceAccountPassword);
 
-            using (var impersonationContext = WindowsIdentity.Impersonate(authToken))
+            WindowsIdentity.RunImpersonated(authToken, () =>
             {
-
                 for (var i = 0; i < files.Count; i++)
                 {
                     var file = files[i];
                     var filename = Path.GetFileName(file.FileName);
                     var path = Path.Combine(configuration.BasePath, filename);
 
-                    using (var fs = File.Create(path))
+using (var fs = File.Create(path))
                     {
                         // TODO - Switch to CopyToAsync when upgrading to .NET 8
                         file.InputStream.CopyTo(fs);
                     }
                 }
-            }
+            });
         }
 
-        private IntPtr GetAuthToken(string username, string domain, string password)
+        private SafeAccessTokenHandle GetAuthToken(string username, string domain, string password)
         {
-            if (!LogonUser(username, domain, password, LOGON32_LOGON_NEWCREDENTIALS, LOGON32_PROVIDER_DEFAULT, out IntPtr authToken))
+            if (!LogonUser(username, domain, password, LOGON32_LOGON_NEWCREDENTIALS, LOGON32_PROVIDER_DEFAULT, out SafeAccessTokenHandle authToken))
             {
                 throw new InvalidOperationException($"Unable to get auth token for service account {username} in domain {domain}");
             }
