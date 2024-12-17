@@ -4,8 +4,7 @@ using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace eShopLegacyMVC.Models
 {
@@ -47,17 +46,14 @@ using (var reader = new StreamReader(responseStream))
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
+        public ApplicationDbContext()
+            : base("IdentityDBContext", throwIfV1Schema: false)
         {
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public static ApplicationDbContext Create()
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer("name=IdentityDBContext");
-            }
+            return new ApplicationDbContext();
         }
     }
 }
