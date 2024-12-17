@@ -1,25 +1,24 @@
 using eShopLegacy.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
+
 
 namespace eShopLegacyMVC.Controllers
 {
     public class AspNetSessionController : Controller
     {
         // GET: AspNetCoreSession
-        public IActionResult Index()
+        public ActionResult Index()
         {
-            var modelJson = HttpContext.Session.GetString("DemoItem");
-            var model = modelJson != null ? JsonSerializer.Deserialize<SessionDemoModel>(modelJson) : null;
+            var model = HttpContext.Session["DemoItem"];
             return View(model);
         }
 
         // POST: AspNetCoreSession
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Index(SessionDemoModel demoModel)
+        public ActionResult Index(SessionDemoModel demoModel)
         {
-            HttpContext.Session.SetString("DemoItem", JsonSerializer.Serialize(demoModel));
+            HttpContext.Session["DemoItem"] = demoModel;
             return View(demoModel);
         }
     }
