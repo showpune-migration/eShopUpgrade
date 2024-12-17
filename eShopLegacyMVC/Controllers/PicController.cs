@@ -29,7 +29,7 @@ namespace eShopLegacyMVC.Controllers
 
             if (catalogItemId <= 0)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return StatusCode((int)HttpStatusCode.BadRequest);
             }
 
             var item = service.FindCatalogItem(catalogItemId);
