@@ -30,17 +30,17 @@ namespace eShopLegacyMVC.Controllers
         }
 
         // GET: Catalog/Details/5
-        public ActionResult Details(int? id)
+        public IActionResult Details(int? id)
         {
             _log.Info($"Now loading... /Catalog/Details?id={id}");
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return StatusCode((int)HttpStatusCode.BadRequest);
             }
             CatalogItem catalogItem = service.FindCatalogItem(id.Value);
             if (catalogItem == null)
             {
-                return HttpNotFound();
+                return NotFound();
             }
             AddUriPlaceHolder(catalogItem);
 
