@@ -1,4 +1,5 @@
 using eShopLegacyMVC.Services;
+using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
@@ -43,10 +44,10 @@ namespace eShopLegacyMVC.Controllers
         }
 
         [HttpPost]
-        public ActionResult UploadDocument(IFormFileCollection files)
+        public ActionResult UploadDocument()
         {
             var fileService = FileService.Create();
-            fileService.UploadFile(files);
+            fileService.UploadFile(Request.Files);
             return RedirectToAction("Index");
         }
     }
