@@ -60,13 +60,13 @@ namespace eShopLegacyMVC.Services
             });
         }
 
-public async Task UploadFileAsync(List<IFormFile> files)
+public void UploadFile(List<IFormFile> files)
         {
             var authToken = string.IsNullOrEmpty(configuration.ServiceAccountUsername)
                 ? WindowsIdentity.GetCurrent().AccessToken
                 : GetAuthToken(configuration.ServiceAccountUsername, configuration.ServiceAccountDomain, configuration.ServiceAccountPassword);
 
-            await WindowsIdentity.RunImpersonatedAsync(authToken, async () =>
+            WindowsIdentity.RunImpersonated(authToken, () =>
             {
                 for (var i = 0; i < files.Count; i++)
                 {
@@ -76,10 +76,8 @@ public async Task UploadFileAsync(List<IFormFile> files)
 
 using (var fs = File.Create(path))
                     {
-using (var stream = file.OpenReadStream())
-                        {
-                            await stream.CopyToAsync(fs);
-                        }
+                        // TODO - Switch to CopyToAsync when upgrading to .NET 8
+                        file.InputStream.CopyTo(fs);
                     }
                 }
             });
