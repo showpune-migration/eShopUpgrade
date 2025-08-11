@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.IO;
 using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
+
 namespace eShopLegacyMVC.Models
 {
-    public class ApplicationUser : IdentityUser
+    public class ApplicationUser : Microsoft.AspNet.Identity.EntityFramework.IdentityUser
     {
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
@@ -43,7 +44,7 @@ namespace eShopLegacyMVC.Models
         }
     }
 
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : Microsoft.AspNet.Identity.EntityFramework.IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
             : base("IdentityDBContext", throwIfV1Schema: false)

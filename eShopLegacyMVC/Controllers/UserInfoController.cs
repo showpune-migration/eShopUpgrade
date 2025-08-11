@@ -1,4 +1,6 @@
-﻿using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace eShopLegacyMVC.Controllers
 {

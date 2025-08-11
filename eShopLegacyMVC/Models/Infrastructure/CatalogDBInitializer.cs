@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Entity;
@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace eShopLegacyMVC.Models.Infrastructure
 {
@@ -26,7 +27,8 @@ namespace eShopLegacyMVC.Models.Infrastructure
         public CatalogDBInitializer(CatalogItemHiLoGenerator indexGenerator)
         {
             this.indexGenerator = indexGenerator;
-            useCustomizationData = bool.Parse(ConfigurationManager.AppSettings["UseCustomizationData"]);
+            var appSettings = System.Configuration.ConfigurationManager.AppSettings;
+            useCustomizationData = appSettings["UseCustomizationData"] != null && bool.Parse(appSettings["UseCustomizationData"]);
         }
 
         protected override void Seed(CatalogDBContext context)

@@ -1,6 +1,7 @@
-﻿using System.IO;
+using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
+#pragma warning disable SYSLIB0011 // Type or member is obsolete
 namespace eShopLegacy.Utilities
 {
     public class Serializing
@@ -18,7 +19,8 @@ namespace eShopLegacy.Utilities
         {
             var binaryFormatter = new BinaryFormatter();
             stream.Seek(0, SeekOrigin.Begin);
-            return binaryFormatter.UnsafeDeserialize(stream, null);
-        }
+            return binaryFormatter.Deserialize(stream);
     }
+}
+#pragma warning restore SYSLIB0011 // Type or member is obsolete
 }
